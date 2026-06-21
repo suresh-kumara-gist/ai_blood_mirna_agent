@@ -1,6 +1,6 @@
 # 🧬 AI Blood microRNA Multi-Cancer Detection Agent
 
-Hackathon-ready prototype for blood microRNA expression based early cancer risk screening.
+prototype for blood microRNA expression based early cancer risk screening.
 
 > ⚠️ Not a medical device. Not for diagnosis. Research/demo use only.
 
