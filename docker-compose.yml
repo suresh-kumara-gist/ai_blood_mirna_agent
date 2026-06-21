@@ -1,0 +1,50 @@
+services:
+  mirna-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-blood-mirna-agent
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+      - ./artifacts:/app/artifacts
+    environment:
+      PYTHONPATH: /app
+      STREAMLIT_SERVER_ADDRESS: 0.0.0.0
+      STREAMLIT_SERVER_PORT: 8501
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+    command: streamlit run app/streamlit_app.py --server.address=0.0.0.0 --server.port=8501
+
+  train-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./artifacts:/app/artifacts
+    environment:
+      PYTHONPATH: /app
+    command: python -m model.train --epochs 8 --augment --out_dir artifacts
+
+  train-real:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./artifacts:/app/artifacts
+    environment:
+      PYTHONPATH: /app
+    command: >
+      python -m model.train
+      --soft_paths
+      "data/raw/GSE74190_family_Lung_cancer_miRNA dataset.soft.gz"
+      "data/raw/GSE106817_family_Pan_cancer_miRNA.soft.gz"
+      "data/raw/GSE45666_family_Breast_cancer_miRNA_dataset.soft.gz"
+      --epochs 12
+      --max_features 512
+      --augment
+      --out_dir artifacts
